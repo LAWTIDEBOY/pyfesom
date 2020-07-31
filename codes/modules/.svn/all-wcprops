@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/awi-cm/!svn/ver/80/trunk/view/py_fesom/modules
+END
+woa2005.py
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/awi-cm/!svn/ver/60/trunk/view/py_fesom/modules/woa2005.py
+END
+scalar_r2g.py
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/awi-cm/!svn/ver/60/trunk/view/py_fesom/modules/scalar_r2g.py
+END
+load_mesh_data.py
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/awi-cm/!svn/ver/80/trunk/view/py_fesom/modules/load_mesh_data.py
+END
+fesom_plot_tools.py
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/awi-cm/!svn/ver/60/trunk/view/py_fesom/modules/fesom_plot_tools.py
+END
