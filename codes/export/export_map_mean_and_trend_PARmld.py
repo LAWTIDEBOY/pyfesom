@@ -413,7 +413,7 @@ for ye in range(0,len(years)):
     for i in range(0,len(mesh.x2)):
         mld_ind = (np.abs(mld[i]-mesh.zlevs)).argmin(axis=0)
         d_ind   = mesh.n32[i,0:mld_ind]
-        paml[i]    = np.sum(par[d_ind]* NodalVol3D[d_ind])/np.sum(NodalVol3D[d_ind])
+        parml[i]    = np.sum(par[d_ind]* NodalVol3D[d_ind])/np.sum(NodalVol3D[d_ind])
         
     PAR[ye,:]  = parml
 
