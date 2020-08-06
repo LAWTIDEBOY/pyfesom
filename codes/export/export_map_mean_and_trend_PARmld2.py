@@ -68,7 +68,7 @@ months =np.linspace(0,11,12).astype(int)
 # choose depth
 get3d = True
 # load the given biological tracer #
-var_id1, var_id2, mld_id = 'tr06', 'tr15', 'mixlay'
+mld_id, par_id   ='mixlay', 'PAR3D_mean'
 # export CSV
 export_csv = True
 
@@ -103,14 +103,14 @@ mesh.n32 = mesh.n32-1
 
 CHL  = np.zeros((len(years),len(mesh.x2)))
 
-for mo in range(9,10):
+for mo in range(4,10):
     for ye in range(0,len(years)):
      print years[ye]
      if years[ye] < 2000:
         chlint= np.zeros(len(mesh.x2))
-        ncfile  = resultpath+runid+'.'+str(years[ye])+'.oce.mean.nc'
+        ncfile  = resultpath+runid+'.'+str(years[ye])+'.bio.mean.nc'
         f       = Dataset(ncfile, 'r')    
-        chl     = f.variables[var_id1][mo,:] + f.variables[var_id2][mo,:]
+        chl     = f.variables[par_id][mo,:]
         ncfile  = resultpath+runid+'.'+str(years[ye])+'.oce.diag.nc'
         f       = Dataset(ncfile, 'r')  
         mld     = f.variables[mld_id][mo,:]
@@ -158,7 +158,7 @@ for mo in range(9,10):
       for ind in dayind:
           ncfile  = resultpath+runid+'.'+str(years[ye])+'.oce.mean.nc'
           f       = Dataset(ncfile, 'r')    
-          chl     = f.variables[var_id1][ind,:] + f.variables[var_id2][ind,:]
+          chl     = f.variables[par_id][ind,:]
           for i in range(0,len(mesh.x2)):
               mld_ind = (np.abs(mld[i]-mesh.zlevs)).argmin(axis=0)
               if mld_ind>0:
@@ -182,6 +182,6 @@ for mo in range(9,10):
     print 'Max and min: ',np.max(data2),np.min(data2)
 
     if export_csv == True:
-        np.savetxt(outputpath+'CHLmld_'+month+'_'+str(first_year)+'_'+str(last_year)+'_trend.csv', CHL, delimiter=";")
-        np.savetxt(outputpath+'CHLmld_'+month+'_'+str(first_year)+'_'+str(last_year)+'_mean.csv', data2, delimiter=";")
+        np.savetxt(outputpath+'PARmld_'+month+'_'+str(first_year)+'_'+str(last_year)+'_trend.csv', CHL, delimiter=";")
+        np.savetxt(outputpath+'PARmld_'+month+'_'+str(first_year)+'_'+str(last_year)+'_mean.csv', data2, delimiter=";")
         print 'exporting done ...'

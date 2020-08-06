@@ -100,12 +100,14 @@ mesh.n32 = mesh.n32-1
 
 # In[ ]:
 
+DEPTHS  = np.empty((len(years),mesh.n2d))
+CONC    = np.empty((len(years),mesh.n2d))
 
-CHL  = np.zeros((len(years),len(mesh.x2)))
-
-for mo in range(9,10):
+for mo in range(4,10):
     for ye in range(0,len(years)):
      print years[ye]
+     depths= np.zeros(len(mesh.x2))
+     conc= np.zeros(len(mesh.x2))
      if years[ye] < 2000:
         chlint= np.zeros(len(mesh.x2))
         ncfile  = resultpath+runid+'.'+str(years[ye])+'.oce.mean.nc'
@@ -116,24 +118,21 @@ for mo in range(9,10):
         mld     = f.variables[mld_id][mo,:]
     
         for i in range(0,len(mesh.x2)):
-            # below is for weighted average
-            #deep_ind   = mesh.n32[i,0:13]# integration between 0 and -190m
-            #deep_ind = deep_ind[deep_ind>-10]
-            #chlint[i]    = np.sum(chl[d_ind]* NodalVol3D[d_ind])/np.sum(NodalVol3D[d_ind])
-            # Below is for depth integration
             mld_ind = (np.abs(mld[i]-mesh.zlevs)).argmin(axis=0)
-        
-            if mld_ind>0:
-                deep_ind = mesh.n32[i,0:mld_ind]
-                loc_chl  = chl[deep_ind] # All chl in the MLD
-                z_lev=mesh.z3[deep_ind]
-                chlint[i] = np.trapz(loc_chl, z_lev)
+            deep_ind = mesh.n32[i,0:mld_ind]
+            loc_chl  = chl[deep_ind] # All chl in the MLD
+            loc_chl  = loc_chl[loc_chl>0.01]
+            loc_chl=np.nan_to_num(loc_chl)
+            if (len(loc_chl)>0 and loc_chl.argmax(axis=0)>0):
+                scm_i = loc_chl.argmax(axis=0)
+                depths[i]  = depths[i] + mesh.zlevs[scm_i]
+                conc[i]    = conc[i] + loc_chl[scm_i]
             else:
-                deep_ind = mesh.n32[i,mld_ind]
-                loc_chl  = chl[deep_ind] # All chl in the MLD
-                chlint[i] = loc_chl
+                depths[i]  = depths[i] + mesh.zlevs[0]
+                conc[i]    = conc[i] + loc_chl[0]
       
-        CHL[ye,:]  = chlint
+        DEPTHS[ye,:]  = depths/(numdays)
+        CONC[ye,:]    = conc/(numdays)
  
      else:
       if mo ==4: 
@@ -160,28 +159,34 @@ for mo in range(9,10):
           f       = Dataset(ncfile, 'r')    
           chl     = f.variables[var_id1][ind,:] + f.variables[var_id2][ind,:]
           for i in range(0,len(mesh.x2)):
-              mld_ind = (np.abs(mld[i]-mesh.zlevs)).argmin(axis=0)
-              if mld_ind>0:
-                deep_ind = mesh.n32[i,0:mld_ind]
-                loc_chl  = chl[deep_ind] # All chl in the MLD
-                z_lev=mesh.z3[deep_ind]
-                loc_chl=np.nan_to_num(loc_chl)
-                chlint[i] = np.trapz(loc_chl, z_lev)
-              else:
-                deep_ind = mesh.n32[i,mld_ind]
-                loc_chl  = chl[deep_ind] # All chl in the MLD
-                loc_chl=np.nan_to_num(loc_chl)
-                chlint[i] = loc_chl
-      CHL[ye,:]  = chlint / len(dayind)
+            deep_ind = mesh.n32[i,0:mld_ind]
+            loc_chl  = chl[deep_ind] # All chl in the MLD
+            loc_chl  = loc_chl[loc_chl>0.01]
+            loc_chl=np.nan_to_num(loc_chl)
+            if (len(loc_chl)>0 and loc_chl.argmax(axis=0)>0):
+                scm_i = loc_chl.argmax(axis=0)
+                depths[i]  = depths[i] + mesh.zlevs[scm_i]
+                conc[i]    = conc[i] + loc_chl[scm_i]
+            else:
+                depths[i]  = depths[i] + mesh.zlevs[0]
+                conc[i]    = conc[i] + loc_chl[0]
 
+      DEPTHS[ye,:]  = depths/(numdays)
+      CONC[ye,:]    = conc/(numdays)
+
+    CONC = np.nan_to_num(CONC)
+    DEPTHS = np.nan_to_num(DEPTHS)
     
-    data2=CHL.mean(axis=0)
+    data1=CONC.mean(axis=0)
+    data2=DEPTHS.mean(axis=0)
     print 'Number of nans in tracer: ',np.count_nonzero(np.isnan(data2))
     print 'Number of inf in tracer: ',np.count_nonzero(np.isinf(data2))
     print 'Mean of surface: ',np.mean(data2[0:len(mesh.x2)])
     print 'Max and min: ',np.max(data2),np.min(data2)
 
     if export_csv == True:
-        np.savetxt(outputpath+'CHLmld_'+month+'_'+str(first_year)+'_'+str(last_year)+'_trend.csv', CHL, delimiter=";")
-        np.savetxt(outputpath+'CHLmld_'+month+'_'+str(first_year)+'_'+str(last_year)+'_mean.csv', data2, delimiter=";")
+        np.savetxt(outputpath+'SCMconc_'+month+'_'+str(first_year)+'_'+str(last_year)+'_trend.csv', CONC, delimiter=";")
+        np.savetxt(outputpath+'SCMconc_'+month+'_'+str(first_year)+'_'+str(last_year)+'_mean.csv', data1, delimiter=";")
+        np.savetxt(outputpath+'SCMdepth_'+month+'_'+str(first_year)+'_'+str(last_year)+'_trend.csv', DEPTHS, delimiter=";")
+        np.savetxt(outputpath+'SCMdepth_'+month+'_'+str(first_year)+'_'+str(last_year)+'_mean.csv', data2, delimiter=";")
         print 'exporting done ...'
