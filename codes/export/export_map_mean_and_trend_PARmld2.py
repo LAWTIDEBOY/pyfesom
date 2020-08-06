@@ -156,9 +156,12 @@ for mo in range(4,10):
          month='SEP'
       chlint= np.zeros(len(mesh.x2))
       for ind in dayind:
-          ncfile  = resultpath+runid+'.'+str(years[ye])+'.oce.mean.nc'
+          ncfile  = resultpath+runid+'.'+str(years[ye])+'.bio.mean.nc'
           f       = Dataset(ncfile, 'r')    
           chl     = f.variables[par_id][ind,:]
+          ncfile  = resultpath+runid+'.'+str(years[ye])+'.oce.diag.nc'
+          f       = Dataset(ncfile, 'r')  
+          mld     = f.variables[mld_id][ind,:]
           for i in range(0,len(mesh.x2)):
               mld_ind = (np.abs(mld[i]-mesh.zlevs)).argmin(axis=0)
               if mld_ind>0:

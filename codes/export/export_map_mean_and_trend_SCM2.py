@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # coding: utf-8
 
 # In[1]:
@@ -129,10 +129,10 @@ for mo in range(4,10):
                 conc[i]    = conc[i] + loc_chl[scm_i]
             else:
                 depths[i]  = depths[i] + mesh.zlevs[0]
-                conc[i]    = conc[i] + loc_chl[0]
+                conc[i]    = conc[i] + chl[deep_ind[0]]
       
-        DEPTHS[ye,:]  = depths/(numdays)
-        CONC[ye,:]    = conc/(numdays)
+        DEPTHS[ye,:]  = depths
+        CONC[ye,:]    = conc
  
      else:
       if mo ==4: 
@@ -169,8 +169,8 @@ for mo in range(4,10):
                 conc[i]    = conc[i] + loc_chl[scm_i]
             else:
                 depths[i]  = depths[i] + mesh.zlevs[0]
-                conc[i]    = conc[i] + loc_chl[0]
-
+                conc[i]    = conc[i] + chl[deep_ind[0]]
+      numdays=len(dayind)
       DEPTHS[ye,:]  = depths/(numdays)
       CONC[ye,:]    = conc/(numdays)
 
