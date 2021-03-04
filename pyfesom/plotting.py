@@ -26,7 +26,7 @@ import math
 
 def plot_transect_map(lon_start, lat_start, lon_end, lat_end, 
                       mesh, npoints=30, view = 'w', stock_img=False):
-    # plt.figure(figsize=(10,10))
+    plt.figure(figsize=(12,12))
     lonlat = transect_get_lonlat(lon_start, lat_start, lon_end, lat_end, npoints=npoints)
     nodes  = transect_get_nodes(lonlat, mesh)
     dist   = transect_get_distance(lonlat)
