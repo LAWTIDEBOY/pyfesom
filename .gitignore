@@ -9,6 +9,8 @@ codes/modules/.svn/
 *.icloud
 
 # Distribution / packaging
+*.npz
+*.npy
 data/
 .Python
 build/
