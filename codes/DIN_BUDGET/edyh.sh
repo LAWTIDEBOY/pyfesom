@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH -p standard96
 #SBATCH -t 11:30:00
-#SBATCH --mem=256G
+#SBATCH --mem=32G
 #SBATCH --job-name=EDYH
 #SBATCH --output=EDYH_%A_%a.out
 #SBATCH --array=1-16
-#SBATCH --cpus-per-task=16
+#SBATCH -A hbkoziel
 
 module load anaconda2
 

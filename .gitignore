@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 codes/modules/.svn/
+*.mov
+*.DS_Store
 
 # C extensions
 *.so
